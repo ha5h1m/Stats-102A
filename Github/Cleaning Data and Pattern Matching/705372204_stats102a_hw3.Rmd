@@ -1,0 +1,140 @@
+---
+title: "705372204_stats102a_hw3"
+author: "Hashim Bhat (705372204)"
+date: "2023-02-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(stringr)
+source('705372204_stats102a_hw3.R')
+```
+
+## Part 1
+
+## (a)
+
+```{r}
+ingredient <- read.csv("ingredient.csv") %>% mutate(food_item = trimws(food_item))
+ingredient %>% filter(recipe == 'Beef Burger') %>% select(food_item)
+```
+
+## (b)
+
+```{r}
+ingredient %>% group_by(recipe) %>% filter(any(substr(food_item, 1, 6) == 'Tomato'), 
+                                           any(food_item == 'Bread')) %>% subset(food_item != 'Ground Beef' 
+                                                                                 & food_item != 'Onions'
+                                                                                 & food_item != 'Turkey')
+                                              
+```
+
+## (c)
+
+```{r}
+stock <- read.csv('stock.csv') %>% mutate(food_item = trimws(food_item))
+food_item <- read.csv('food_item.csv') 
+stock %>% left_join(food_item, by = c('food_item' = 'item')) %>% 
+  filter(shop == 'MyMart' | shop == 'Coco Mart', type =='Meat') %>% select(food_item, shop, price..US.dollars.per.lb.)
+```
+
+
+## (d)
+
+```{r}
+ingredient %>% left_join(food_item, by = c('food_item' = 'item')) %>% group_by(recipe) %>% mutate(total_calories = sum(calories*weight..oz.)) %>% select(recipe, total_calories) %>% distinct
+#Multiplied calories by weight to scale correctly
+```
+
+## Part 2
+
+## Question 1
+
+## (a)
+
+```{r}
+namesdata <- unlist(read.table('names.txt', sep = '\n'), use.names = F)
+str_detect(namesdata, pat_1_a)
+
+```
+
+## (b)
+
+```{r}
+str_detect(namesdata, pat_1_b)
+```
+
+## (c)
+
+```{r}
+str_detect(namesdata, pat_1_c)
+```
+
+## Question 2
+
+## (a)
+
+```{r}
+cards <- unlist(read.table('cards.txt', sep = '\n'), use.names = F)
+apply(str_match(cards[str_detect(cards, pat_2_a)], pat_2_a)[,2:5], 1, paste, collapse = ' ')
+
+```
+
+## (b)
+
+```{r}
+apply(str_match(cards[str_detect(cards, pat_2_b)], pat_2_b)[,2:5], 1, paste, collapse = ' ')
+```
+
+## Question 3
+
+## (a)
+
+```{r}
+passwords <- unlist(read.table('passwords.txt', sep = '\n'), use.names = F)
+passwords[str_detect(passwords, pat_3_a)]
+```
+
+## (b)
+
+```{r}
+passwords[str_detect(passwords, pat_3_b)] 
+```
+
+
+## Question 4
+
+## (a)
+
+```{r}
+load('wordlists.Rdata')
+str_detect(wordlists$Ranges$x, pat_4_a)
+str_detect(wordlists$Ranges$y, pat_4_a)
+```
+
+## Question 4
+
+## (b)
+
+```{r}
+str_detect(wordlists$Backrefs$x, pat_4_b)
+str_detect(wordlists$Backrefs$y, pat_4_b)
+```
+
+## (c)
+
+```{r}
+str_detect(wordlists$Prime$x, pat_4_c)
+str_detect(wordlists$Prime$y, pat_4_c)
+```
+
+
+
+
+
+
+
+
+
